@@ -1,0 +1,10 @@
+import mongoose from "mongoose";
+const userSchema = new mongoose.Schema({
+firstName: { type: String, required: true },
+lastName: { type: String },
+username: { type: String, required: true, unique: true },
+password: { type: String, required: true },
+usertype: { type: String, enum: ["user", "admin"], required: true },
+photourl: { type: String }
+}, { timestamps: true });
+export default mongoose.model("User", userSchema);
