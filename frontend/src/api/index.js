@@ -61,30 +61,6 @@ export const getTokenFromCookies = () => {
   return Cookies.get("token");
 };
 
-// Function to perform the login API call
-// export const login = async (formData) => {
-//   try {
-//     const response = await unauthorizedApiClient.post("/user/login", formData);
-//     const { token } = response.data;
-//     setTokenInCookies(token);
-//     setAuthToken(token); // Set the JWT token in the axios headers
-//     return response.data;
-//   } catch (error) {
-//     throw error.response.data;
-//   }
-// };
-
-// export const login = async (formData) => {
-//   try {
-//     const response = await unauthorizedApiClient.post("/user/login", formData);
-//     const { token } = response.data;
-//     setTokenInCookies(token);
-//     setAuthToken(token);
-//     return response; // return full Axios response
-//   } catch (error) {
-//     throw error.response;
-//   }
-// };
 
 export const login = async (formData) => {
   try {
@@ -322,6 +298,14 @@ export const getPendingReturnRequestsAdmin = async () => {
   }
 };
 
+export const getApprovedReturnRequests = async () => {
+  const response = await authorizedApiClient.get(
+    "/returnRequest/getApprovedReturnRequests"
+  );
+  return response.data; // { message, data }
+};
+
+
 // api.js
 // Add this function to make an API call to approve a return request
 export const approveReturnRequest = async (returnId) => {
@@ -336,25 +320,13 @@ export const approveReturnRequest = async (returnId) => {
   }
 };
 
-// export const getApprovedReturnRequests = async () => {
-//   try {
-//     const response = await authorizedApiClient.get(
-//       "/returnRequest/getApprovedReturnRequests"
-//     );
-//     return response.data;
-//   } catch (error) {
-//     throw error.response.data;
-//   }
-// };
+
 
 
 export const getApprovedRentRequests = async () => {
-  try {
-    const response = await authorizedApiClient.get(
-      "/rentRequest/getApprovedRentRequests"
-    );
-    return response.data;
-  } catch (error) {
-    throw error.response.data;
-  }
+  const response = await authorizedApiClient.get(
+    "/rentRequest/getApprovedRentRequests"
+  );
+  return response.data; // { message, data }
 };
+

@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { Container, Button, Card } from "react-bootstrap";
-import { getRentedBicycles, returnBicycle } from "../../api/index";
-import NoContent from "../common/NoContent"; // Import the NoContent component
-import "./index.css"; // Import the same styles used in Home.jsx
+import { getRentedBicycles, returnBicycle } from "../../api";
+import NoContent from "../common/NoContent";
+import "./index.css";
 
 function RentedBicycles() {
   const [rentedBicycles, setRentedBicycles] = useState([]);
@@ -13,22 +13,20 @@ function RentedBicycles() {
 
   const fetchRentedBicycles = async () => {
     try {
-      const response = await getRentedBicycles();
-      console.log("rented bicycles -> ", response.data);
-      setRentedBicycles(response.data);
+      const res = await getRentedBicycles();
+      console.log("RENTED:", res.data);
+      setRentedBicycles(res.data || []);
     } catch (error) {
-      console.log("Error fetching rented bicycles", error);
+      console.error("Error fetching rented bicycles", error);
     }
   };
 
   const handleReturnBicycle = async (rentalId) => {
     try {
       await returnBicycle(rentalId);
-      // After successfully returning the bicycle, fetch the updated list of rented bicycles
       fetchRentedBicycles();
-    } 
-    catch (error) {
-      console.log("Error returning the bicycle", error);
+    } catch (error) {
+      console.error("Error returning bicycle", error);
     }
   };
 
@@ -36,22 +34,25 @@ function RentedBicycles() {
     <Container>
       <Card
         className="text-center p-3 mb-4"
-        style={{ boxShadow: "0px 4px 8px 0px rgba(0, 0, 0, 0.10)", borderRadius: "10px",border:"none" }}
+        style={{
+          boxShadow: "0px 4px 8px rgba(0,0,0,0.1)",
+          borderRadius: "10px",
+          border: "none",
+        }}
       >
         <div className="main-heading">Rented Bicycles</div>
       </Card>
-      {rentedBicycles.length === 0 ? ( // Use the NoContent component when there are no rented bicycles
+
+      {rentedBicycles.length === 0 ? (
         <NoContent
           heading="No rented bicycles at the moment."
           text="Please check back later."
         />
       ) : (
         <div className="bicycle-list">
-          {rentedBicycles.map((bicycle , index) => (
+          {rentedBicycles.map((rental, index) => (
             <Card
-            
-              key={bicycle.rental_id}
-              // className="mb-3 bicycle-card"
+              key={rental._id}
               className={
                 index % 4 === 0 ? "mb-3 bicycle-card" : "mb-3 bicycle-card ml"
               }
@@ -59,20 +60,28 @@ function RentedBicycles() {
                 width: "24%",
                 minWidth: "200px",
                 padding: "20px 0px",
-                boxShadow: "0 4px 8px 0px rgba(0, 0, 0, 0.10)",
+                boxShadow: "0 4px 8px rgba(0,0,0,0.1)",
                 borderRadius: "8px",
                 border: "none",
               }}
             >
               <Card.Body>
-                <Card.Title>{bicycle.bicycle_name}</Card.Title>
-                <Card.Text>Rental ID: {bicycle.rental_id}</Card.Text>
-                <Card.Text>Cost per Hour: {bicycle.cost_per_hour}</Card.Text>
+                <Card.Title>
+                  {rental.bicycleId?.bicycleName || "N/A"}
+                </Card.Title>
+
+                <Card.Text>
+                  Rental ID: {rental._id}
+                </Card.Text>
+
+                <Card.Text>
+                  Cost per Hour: {rental.bicycleId?.costPerHour}
+                </Card.Text>
+
                 <Button
                   variant="primary"
-                  onClick={() => handleReturnBicycle(bicycle.rental_id)}
-                  // className="mx-auto d-block"
                   style={{ width: "120px" }}
+                  onClick={() => handleReturnBicycle(rental._id)}
                 >
                   Return
                 </Button>

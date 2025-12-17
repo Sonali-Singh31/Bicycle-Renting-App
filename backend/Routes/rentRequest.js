@@ -79,22 +79,29 @@ router.get("/getPendingRentRequestUser", verifyJwtToken, async (req, res) => {
 });
 
 // Approved Rent Requests (admin only)
-router.get("/getApprovedRentRequests", verifyJwtToken, verifyAdmin, async (req, res) => {
-  try {
-    const requests = await RentRequest.find({ requestStatus: "Approved" }) // 🔹 FIX
-      .populate("bicycleId", "bicycleName costPerHour")
-      .populate("userId", "firstName lastName username")
-      .populate("approvedByAdminId", "firstName lastName username"); // if exists
+router.get(
+  "/getApprovedRentRequests",
+  verifyJwtToken,
+  verifyAdmin,
+  async (req, res) => {
+    try {
+      const requests = await RentRequest.find({
+        requestStatus: "Approved",
+      })
+        .populate("bicycleId", "bicycleName costPerHour")
+        .populate("userId", "firstName lastName username")
+        .populate("approvedByAdminId", "firstName lastName username");
 
-    res.status(200).json({
-      message: "Approved rent requests fetched",
-      data: requests,
-    });
-  } catch (error) {
-    console.error("Error fetching approved rent requests:", error);
-    res.status(500).json({ message: "Internal server error" });
+      res.status(200).json({
+        message: "Approved rent requests fetched",
+        data: requests,
+      });
+    } catch (error) {
+      res.status(500).json({ message: "Internal server error" });
+    }
   }
-});
+);
+
 
 
 export default router;

@@ -86,4 +86,34 @@ router.get("/getPendingReturnRequestAdmin", verifyJwtToken, verifyAdmin, async (
   }
 });
 
+// Approved return requests (ADMIN)
+router.get(
+  "/getApprovedReturnRequests",
+  verifyJwtToken,
+  verifyAdmin,
+  async (req, res) => {
+    try {
+      const requests = await ReturnRequest.find({
+        returnStatus: "Approved",
+      })
+        .populate({
+          path: "rentalId",
+          populate: [
+            { path: "bicycleId", select: "bicycleName costPerHour" },
+            { path: "userId", select: "firstName lastName username" },
+          ],
+        })
+        .populate("approvedByAdminId", "firstName lastName");
+
+      res.status(200).json({
+        message: "Approved return requests fetched",
+        data: requests,
+      });
+    } catch (error) {
+      res.status(500).json({ message: "Internal server error" });
+    }
+  }
+);
+
+
 export default router;
