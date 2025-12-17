@@ -1,7 +1,8 @@
 import axios from "axios";
 import Cookies from "js-cookie";
 
-const BASE_URL = "http://localhost:6001/api"; // Replace this with your backend URL
+// const BASE_URL = "http://localhost:6001/api"; // Replace this with your backend URL
+const BASE_URL = "https://bicycle-renting-app.vercel.app/"; // Replace this with your backend URL
 
 // Function to set the authorization header with the JWT token
 export const setAuthToken = (token) => {
